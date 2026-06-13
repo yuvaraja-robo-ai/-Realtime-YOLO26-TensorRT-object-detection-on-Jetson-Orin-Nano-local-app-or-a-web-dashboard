@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orin YOLO Detector</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="dot" id="liveDot"></span> ORIN&nbsp;YOLO
+    </div>
+    <div class="metrics">
+      <span class="metric"><b id="fps">0</b> FPS</span>
+      <span class="metric">GPU <b id="gpu">--</b>%</span>
+      <span class="metric">TEMP <b id="temp">--</b>°C</span>
+      <span class="metric">RAM <b id="ram">--</b></span>
+      <span class="metric model" id="model">model: …</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="video-wrap">
+      <img id="stream" src="/stream" alt="live detection stream" />
+    </section>
+
+    <aside class="panel">
+      <div class="block">
+        <h3>Detections</h3>
+        <ul id="counts" class="counts"><li class="muted">waiting…</li></ul>
+      </div>
+
+      <div class="block">
+        <h3>Controls</h3>
+        <label class="row toggle">
+          <span>Detection</span>
+          <input type="checkbox" id="detectToggle" checked />
+        </label>
+        <label class="row toggle">
+          <span>Track (anti-flicker)</span>
+          <input type="checkbox" id="trackToggle" checked />
+        </label>
+        <label class="row toggle">
+          <span>CLAHE (low light)</span>
+          <input type="checkbox" id="claheToggle" />
+        </label>
+        <label class="row">
+          <span>Confidence <b id="confVal">0.15</b></span>
+          <input type="range" id="conf" min="0.05" max="0.95" step="0.05" value="0.15" />
+        </label>
+        <div class="row">
+          <button id="snapBtn">📸 Snapshot</button>
+        </div>
+        <div class="row" id="snapMsg"></div>
+        <div class="row">
+          <button id="deepScanBtn">🔍 Deep Scan (small objects)</button>
+        </div>
+        <div class="row muted" id="deepMsg"></div>
+      </div>
+
+      <div class="block">
+        <h3>Class filter</h3>
+        <input type="text" id="classSearch" placeholder="filter classes…" />
+        <div id="classList" class="class-list"></div>
+        <button id="clearClasses" class="link">show all</button>
+      </div>
+
+      <div class="block train">
+        <h3>Train (teach missed objects)</h3>
+        <div class="row toggle">
+          <span>Active model</span>
+          <select id="modelSelect">
+            <option value="base">Base (COCO)</option>
+            <option value="custom">Custom</option>
+          </select>
+        </div>
+        <button id="captureBtn">＋ Capture frame</button>
+        <div id="dsStats" class="muted" style="margin:8px 0;font-size:12px;">
+          dataset: 0 imgs · 0 labeled · 0 classes
+        </div>
+        <button id="openLabeler" class="secondary">🖍 Label captures</button>
+        <label class="row" style="margin-top:12px;">
+          <span>Epochs <b id="epVal">50</b></span>
+          <input type="range" id="epochs" min="10" max="200" step="10" value="50" />
+        </label>
+        <button id="trainBtn">🚀 Train now</button>
+        <div id="trainStatus" class="train-status muted">idle</div>
+        <div class="bar"><div id="trainBar"></div></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Deep scan result modal -->
+  <div id="deepModal" class="modal hidden">
+    <div class="modal-box">
+      <header class="modal-head">
+        <span id="deepCaption">Deep Scan</span>
+        <button id="deepClose" class="link">✕ close</button>
+      </header>
+      <div class="lab-body">
+        <div class="canvas-wrap">
+          <img id="deepImg" alt="deep scan result" style="max-width:100%;" />
+        </div>
+        <div class="lab-side">
+          <h4>Detections</h4>
+          <ul id="deepCounts" class="counts"><li class="muted">…</li></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Labeling modal -->
+  <div id="labeler" class="modal hidden">
+    <div class="modal-box">
+      <header class="modal-head">
+        <span id="labCaption">Label</span>
+        <button id="labClose" class="link">✕ close</button>
+      </header>
+      <div class="lab-body">
+        <div class="canvas-wrap">
+          <canvas id="labCanvas"></canvas>
+        </div>
+        <div class="lab-side">
+          <div class="row">
+            <button id="suggestBtn" class="secondary">✨ Auto-assist</button>
+          </div>
+          <div class="row">
+            <span>Class for new box</span>
+            <select id="labClass"></select>
+            <input type="text" id="newClass" placeholder="+ new class name" />
+            <button id="addClassBtn" class="secondary">add class</button>
+          </div>
+          <h4>Boxes</h4>
+          <ul id="boxList" class="box-list"></ul>
+          <div class="row nav">
+            <button id="prevCap" class="secondary">‹ prev</button>
+            <button id="saveCap">save</button>
+            <button id="nextCap" class="secondary">next ›</button>
+          </div>
+          <div id="labMsg" class="muted"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

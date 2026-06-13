@@ -1,0 +1,5 @@
+# Web layer only — ultralytics, torch, opencv already present on the Jetson image.
+fastapi>=0.110
+uvicorn[standard]>=0.29
+sahi>=0.11        # SAHI sliced inference for the on-demand small-object Deep Scan
+lap>=0.5         # ByteTrack tracker dependency (anti-flicker)

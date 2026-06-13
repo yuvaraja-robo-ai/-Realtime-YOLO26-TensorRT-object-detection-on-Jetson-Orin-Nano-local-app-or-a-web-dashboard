@@ -1,0 +1,36 @@
+# ── Models / weights (NOT shared — large, device-specific, or fine-tuned) ──
+# TensorRT engines are built per-device; base .pt/.onnx auto-download via
+# scripts/export_engine.py; custom.* is the user's own fine-tuned model.
+*.engine
+*.onnx
+*.pt
+models/
+runs/
+
+# ── Private capture data (camera frames + labels — DO NOT publish) ──
+dataset/images/
+dataset/labels/
+dataset/data.yaml
+dataset/classes.json   # may hold your custom class names; recreated empty on first run
+snapshots/
+
+# ── Local / runtime ──
+.claude/
+*.pid
+*.log
+/tmp/orin-yolo.*
+
+# ── Python ──
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+
+# ── OS / editor ──
+.DS_Store
+*.swp
+.idea/
+.vscode/
