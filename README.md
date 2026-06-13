@@ -132,7 +132,7 @@ sequenceDiagram
     Tr->>GPU: export TensorRT engine → models/custom.engine
     Tr->>Wrk: set_detector(custom)  %% hot-swap
     Tr->>Wrk: resume()
-    Note over Web: WS /ws streams training state → done; stream resumes on custom model
+    Note over Web: WS /ws streams training state → done<br/>stream resumes on custom model
 ```
 
 ## 1. Install web deps
